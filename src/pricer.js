@@ -1,36 +1,29 @@
 function price(imdbId) {
 
-    const http = require("http");
+    const request = require("sync-request");
 
-    rating = http.get('http://www.omdbapi.com/?i=' + imdbId + '&apikey=6487ec62', (response) => {
+    const response = request('GET', 'http://www.omdbapi.com/?i=' + imdbId + '&apikey=6487ec62');
+    const body = response.getBody();
 
-        let data = '';
+    const rating = JSON.parse(body).imdbRating;
+    const title = JSON.parse(body).Title;
 
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
+    if(title == undefined){
+        console.log('Unable to find movie with IMDB ID ' + imdbId);
+        return;
+    }
 
-        response.on('end', () => {
-            const rating = JSON.parse(data).imdbRating;
-            const title = JSON.parse(data).Title;
+    let base_price = 3.95;
 
-            if(title == undefined){
-                console.log('Unable to find movie with IMDB ID ' + imdbId);
-                return;
-            }
+    if (rating >= 7) {
+        base_price += 1.0;
+    }
+    if (rating < 4) {
+        base_price -= 1.0;
+    }
 
-            let base_price = 3.95;
+    console.log('The price of ' + title + ' is £' + base_price);
 
-            if (rating >= 7) {
-                base_price += 1.0;
-            }
-            if (rating < 4) {
-                base_price -= 1.0;
-            }
-
-            console.log('The price of ' + title + ' is £' + base_price);
-        });
-    });
 }
 
 price('tt0096754');
