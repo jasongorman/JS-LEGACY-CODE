@@ -8,11 +8,6 @@ function price(imdbId) {
     const rating = JSON.parse(body).imdbRating;
     const title = JSON.parse(body).Title;
 
-    if(title == undefined){
-        console.log('Unable to find movie with IMDB ID ' + imdbId);
-        return;
-    }
-
     let base_price = 3.95;
 
     if (rating >= 7) {
@@ -22,13 +17,8 @@ function price(imdbId) {
         base_price -= 1.0;
     }
 
-    console.log('The price of ' + title + ' is £' + base_price);
+    return {title: title, price: base_price};
 
 }
-
-price('tt0096754');
-price('tt0060666');
-price('tt0317303');
-price('xys123');
 
 module.exports = price;
